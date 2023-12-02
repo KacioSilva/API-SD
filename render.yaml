@@ -1,4 +1,0 @@
-# render.yaml
-services:
-  - name: web
-    command: gunicorn API-SD.app:app

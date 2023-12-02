@@ -1,20 +1,30 @@
-from flask import Flask, request, jsonify
-from rabbit import RabbitMQ
+import pika
+import threading
 
-app = Flask(__name__)
-rabbit = RabbitMQ('chat_queue')
-rabbit.start_consuming()  # Iniciar a thread de consumo
+class RabbitMQ:
+    def __init__(self, queue_name):
+        self.queue_name = queue_name
+        self.messages = []
+        self.lock = threading.Lock()
 
-@app.route('/send_message', methods=['POST'])
-def send_message():
-    data = request.get_json()
-    message = data.get('message')
-    rabbit.send_message(message)
-    return jsonify({'status': 'Message sent successfully'})
+    def consume_messages(self):
+        def callback(ch, method, properties, body):
+            with self.lock:
+                self.messages.append(body.decode())
 
-@app.route('/receive_messages', methods=['GET'])
-def receive_messages():
-    with rabbit.lock:
-        messages = list(rabbit.messages)
-        rabbit.messages = []  # Limpar as mensagens recebidas
-    return jsonify({'messages': messages})
+        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        channel = connection.channel()
+        channel.queue_declare(queue=self.queue_name)
+        channel.basic_consume(queue=self.queue_name, on_message_callback=callback, auto_ack=True)
+        channel.start_consuming()
+
+    def start_consuming(self):
+        consume_thread = threading.Thread(target=self.consume_messages)
+        consume_thread.start()
+
+    def send_message(self, message):
+        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        channel = connection.channel()
+        channel.queue_declare(queue=self.queue_name)
+        channel.basic_publish(exchange='', routing_key=self.queue_name, body=message)
+        connection.close()
