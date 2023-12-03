@@ -1,4 +1,4 @@
-from flask import Flask, abort, request, jsonify
+from flask import Flask, abort, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -11,6 +11,10 @@ class Message(db.Model):
     user_id = db.Column(db.String(50), nullable=False)
     content = db.Column(db.String(200), nullable=False)
     read = db.Column(db.Boolean, default=False)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/send_message', methods=['POST'])
 def send_message():
