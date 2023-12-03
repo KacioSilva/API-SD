@@ -2,8 +2,10 @@ import pika
 import threading
 
 class RabbitMQ:
-    def __init__(self, queue_name):
+    def __init__(self, queue_name, rabbitmq_host, rabbitmq_port):
         self.queue_name = queue_name
+        self.rabbitmq_host = rabbitmq_host
+        self.rabbitmq_port = rabbitmq_port
         self.messages = []
         self.lock = threading.Lock()
 
@@ -12,7 +14,12 @@ class RabbitMQ:
             with self.lock:
                 self.messages.append(body.decode())
 
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))  
+        connection = pika.BlockingConnection(
+            pika.ConnectionParameters(
+                host=self.rabbitmq_host,
+                port=self.rabbitmq_port,
+            )
+        )
         channel = connection.channel()
         channel.queue_declare(queue=self.queue_name)
         channel.basic_consume(queue=self.queue_name, on_message_callback=callback, auto_ack=True)
@@ -23,7 +30,12 @@ class RabbitMQ:
         consume_thread.start()
 
     def send_message(self, message):
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq')) 
+        connection = pika.BlockingConnection(
+            pika.ConnectionParameters(
+                host=self.rabbitmq_host,
+                port=self.rabbitmq_port,
+            )
+        )
         channel = connection.channel()
         channel.queue_declare(queue=self.queue_name)
         channel.basic_publish(exchange='', routing_key=self.queue_name, body=message)
