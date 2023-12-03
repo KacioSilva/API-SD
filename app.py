@@ -43,7 +43,7 @@ def get_messages_unread(user_id):
 
     db.session.commit()
 
-    return jsonify([{'Mensagens não Lidas': msg.content} for msg in messages])
+    return jsonify([{'ID da Mensagem': msg.id, 'mensagem': f'{msg.content}' } for msg in messages])
 
 @app.route('/get_all_messages/<user_id>', methods=['GET'])
 def get_messages(user_id):
@@ -54,7 +54,7 @@ def get_messages(user_id):
         message.read = True
         db.session.commit() # Marca as mensagens como lidas
 
-    return jsonify([{'ID da Mensagem': msg.id, 'mensagem': f'{msg.id} / {msg.content}' } for msg in messages])
+    return jsonify([{'ID da Mensagem': msg.id, 'mensagem': f'{msg.content}' } for msg in messages])
 
 if __name__ == '__main__':
     app.run(debug=True)
