@@ -21,7 +21,7 @@ def send_message():
     message_content = data.get('message')
 
     if user_id is None or message_content is None:
-        return {'status': 'error', 'message': 'User ID and message are required.'}
+        return {'status': 'error', 'message': 'ID de usuário e mensagem são obrigatórios.'}
 
     new_message = Message(user_id=user_id, content=message_content, read=False)
 
@@ -65,7 +65,7 @@ def delete_message(message_id):
         # Se a mensagem existe
         db.session.delete(message)
         db.session.commit()
-        return {'status': 'success', 'message': 'Message deleted successfully'}
+        return {'status': 'success', 'message': 'A mensagem foi apagada com sucesso!'}
     else:
         # Se a mensagem não existe
         return abort(404, 'A mensagem procurada não é existente')
