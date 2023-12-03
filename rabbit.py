@@ -12,7 +12,7 @@ class RabbitMQ:
             with self.lock:
                 self.messages.append(body.decode())
 
-        connection = pika.BlockingConnection(pika.ConnectionParameters('127.0.0.1'))
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))  # Alteração aqui
         channel = connection.channel()
         channel.queue_declare(queue=self.queue_name)
         channel.basic_consume(queue=self.queue_name, on_message_callback=callback, auto_ack=True)
@@ -23,8 +23,9 @@ class RabbitMQ:
         consume_thread.start()
 
     def send_message(self, message):
-        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))  # Alteração aqui
         channel = connection.channel()
         channel.queue_declare(queue=self.queue_name)
         channel.basic_publish(exchange='', routing_key=self.queue_name, body=message)
         connection.close()
+
