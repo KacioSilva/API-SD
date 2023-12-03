@@ -34,8 +34,8 @@ def send_message():
         db.session.rollback()
         return {'status': 'error'}
 
-@app.route('/get_messages/<user_id>', methods=['GET'])
-def get_messages(user_id):
+@app.route('/get_messages_unread/<user_id>', methods=['GET'])
+def get_messages_unread(user_id):
     messages = Message.query.filter_by(user_id=user_id, read=False).all()
 
     for message in messages:
@@ -43,7 +43,12 @@ def get_messages(user_id):
 
     db.session.commit()
 
-    return jsonify([{'content': msg.content} for msg in messages])
+    return jsonify([{'Mensagens não Lidas': msg.content} for msg in messages])
+
+@app.route('/get_all_messages/<user_id>', methods=['GET'])
+def get_messages(user_id):
+    messages = Message.query.filter_by(user_id=user_id).all()
+    return jsonify([{'Histórico de Mensagens': msg.content} for msg in messages])
 
 if __name__ == '__main__':
     app.run(debug=True)
