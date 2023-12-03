@@ -48,9 +48,11 @@ def get_messages_unread(user_id):
 @app.route('/get_all_messages/<user_id>', methods=['GET'])
 def get_messages(user_id):
     messages = Message.query.filter_by(user_id=user_id).all()
-    
+
     for message in messages:
         message.read = True
+
+        db.session.commit() # Marca as mensagens como lidas
 
     return jsonify([{'Histórico de Mensagens': msg.content} for msg in messages])
 
