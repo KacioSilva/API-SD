@@ -59,7 +59,8 @@
             margin-top: 10px;
         }
 
-        #message-display {
+        #message-display,
+        #unread-message-display {
             display: none;
             position: fixed;
             top: 50%;
@@ -116,26 +117,70 @@
                 <input type="text" id="user-id-to-view-messages" placeholder="Insira o ID do usuário">
                 <button type="button" onclick="viewAllMessages()">Visualizar Mensagens</button>
             </form>
-            <div id="message-display" class="popup">
-                <span class="close-btn" onclick="closePopup()">X</span>
-                <h2>Todas as Mensagens</h2>
-                <div id="messages-content"></div>
+            <hr>
+            <h2>Visualizar Mensagens Não Lidas</h2>
+            <form id="viewUnreadMessagesForm">
+                <label for="user-id-to-view-unread-messages">ID do usuário para visualizar mensagens não lidas:</label>
+                <input type="text" id="user-id-to-view-unread-messages" placeholder="Insira o ID do usuário">
+                <button type="button" onclick="viewUnreadMessages()">Visualizar Mensagens Não Lidas</button>
+            </form>
+            <div id="unread-message-display" class="popup">
+                <span class="close-btn" onclick="closePopup('unread-message-display')">X</span>
+                <h2>Mensagens Não Lidas</h2>
+                <div id="unread-messages-content"></div>
             </div>
-            <div class="overlay" onclick="closePopup()"></div>
+            <div class="overlay" onclick="closePopup('unread-message-display')"></div>
         </div>
     </div>
 
     <script>
         function sendMessage() {
-            // Adicione lógica para enviar mensagens aqui, se necessário
             console.log('Enviando mensagem...');
         }
 
         function deleteMessage() {
-            // Adicione lógica para apagar mensagens aqui, se necessário
             console.log('Apagando mensagem...');
         }
 
         function viewAllMessages() {
-            var messageDisplay
+            var messageDisplay = document.getElementById('message-display');
+            var overlay = document.querySelector('.overlay');
+
+            var messagesContent = document.getElementById('messages-content');
+            messagesContent.innerHTML = '<p>Mensagem 1</p><p>Mensagem 2</p>'; // Substitua pela lógica real
+
+            if (messageDisplay.style.display === 'none') {
+                messageDisplay.style.display = 'block';
+                overlay.style.display = 'block';
+            } else {
+                messageDisplay.style.display = 'none';
+                overlay.style.display = 'none';
+            }
         }
+
+        function viewUnreadMessages() {
+            var unreadMessageDisplay = document.getElementById('unread-message-display');
+            var overlay = document.querySelector('.overlay');
+
+            var unreadMessagesContent = document.getElementById('unread-messages-content');
+            unreadMessagesContent.innerHTML = '<p>Mensagem não lida 1</p><p>Mensagem não lida 2</p>'; // Substitua pela lógica real
+
+            if (unreadMessageDisplay.style.display === 'none') {
+                unreadMessageDisplay.style.display = 'block';
+                overlay.style.display = 'block';
+            } else {
+                unreadMessageDisplay.style.display = 'none';
+                overlay.style.display = 'none';
+            }
+        }
+
+        function closePopup(popupId) {
+            var popup = document.getElementById(popupId);
+            var overlay = document.querySelector('.overlay');
+
+            popup.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
