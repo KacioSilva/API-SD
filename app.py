@@ -1,11 +1,9 @@
-# backend/app.py
 from flask import Flask, abort, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://chat_dados_user:fuWlIngju6yUpkZdrSC1r5yIKDRYstOi@dpg-clm00tsjtl8s73eqv2g0-a/chat_dados'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
 
 class Message(db.Model):
@@ -28,11 +26,11 @@ def send_message():
     try:
         db.session.add(new_message)
         db.session.commit()
-        return {'status': 'success'}
+        return {'status': 'successo'}
     except Exception as e:
         print(str(e))
         db.session.rollback()
-        return {'status': 'error'}
+        return {'status': 'erro'}
 
 @app.route('/get_messages_unread/<user_id>', methods=['GET'])
 def get_messages_unread(user_id):
@@ -43,7 +41,7 @@ def get_messages_unread(user_id):
 
     db.session.commit()
 
-    return jsonify([{'ID da Mensagem': msg.id, 'mensagem': f'{msg.content}' } for msg in messages])
+    return jsonify([{'ID da Mensagem': msg.id, 'Mensagem': f'{msg.content}' } for msg in messages])
 
 @app.route('/get_all_messages/<user_id>', methods=['GET'])
 def get_messages(user_id):
@@ -54,7 +52,7 @@ def get_messages(user_id):
         message.read = True
         db.session.commit() # Marca as mensagens como lidas
 
-    return jsonify([{'ID da Mensagem': msg.id, 'mensagem': f'{msg.content}' } for msg in messages])
+    return jsonify([{'ID da Mensagem': msg.id, 'Mensagem': f'{msg.content}' } for msg in messages])
 
 @app.route('/delete_message/<message_id>', methods=['GET'])
 def delete_message(message_id):
