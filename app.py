@@ -14,8 +14,12 @@ class Message(db.Model):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
-
+    try:
+        return render_template('index.html')
+    except Exception as e:
+        return 'Não foi possível Renderizar o conteúdo visual.'
+    
+    
 @app.route('/send_message', methods=['POST'])
 def send_message():
     data = request.json
