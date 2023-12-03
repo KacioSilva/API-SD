@@ -4,17 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
-    <link rel="stylesheet" href="estilo.css">
+    <link rel="stylesheet" href="../templates/estilo.css">
 </head>
 <body>
     <div id="chat-container">
         <div id="input-container">
-            <input type="text" id="recipient-id" placeholder="ID do destinatário">
-            <input type="text" id="message" placeholder="Digite sua mensagem">
-            <button onclick="sendMessage()">Enviar</button>
+            <h2>Enviar Mensagem</h2>
+            <form id="sendMessageForm">
+                <label for="recipient-id">ID do destinatário:</label>
+                <input type="text" id="recipient-id" placeholder="Insira o ID do destinatário">
+                <label for="message">Mensagem:</label>
+                <input type="text" id="message" placeholder="Digite sua mensagem">
+                <button type="button" onclick="sendMessage()">Enviar</button>
+            </form>
             <hr>
-            <input type="text" id="message-id-to-delete" placeholder="ID da mensagem para apagar">
-            <button onclick="deleteMessage()">Apagar Mensagem</button>
+            <h2>Apagar Mensagem</h2>
+            <form id="deleteMessageForm">
+                <label for="message-id-to-delete">ID da mensagem para apagar:</label>
+                <input type="text" id="message-id-to-delete" placeholder="Insira o ID da mensagem">
+                <button type="button" onclick="deleteMessage()">Apagar Mensagem</button>
+            </form>
         </div>
     </div>
 
