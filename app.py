@@ -22,9 +22,8 @@ def index():
     
 @app.route('/send_message', methods=['POST'])
 def send_message():
-    data = request.json
-    user_id = data.get('user_id')
-    message_content = data.get('message')
+    user_id = request.form.get('user_id')
+    message_content = request.form.get('message')
 
     if user_id is None or message_content is None:
         return {'status': 'error', 'message': 'ID de usuário e mensagem são obrigatórios.'}

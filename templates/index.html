@@ -95,15 +95,17 @@
 <body>
     <div id="chat-container">
         <div id="input-container">
+
             <h2>Enviar Mensagem</h2>
-            <form id="sendMessageForm">
+            <form id="sendMessageForm" action="/send_message" method="POST">
                 <label for="recipient-id">ID do destinatário:</label>
-                <input type="text" id="recipient-id" placeholder="Insira o ID do destinatário">
+                <input type="text" name="user_id" placeholder="Insira o ID do destinatário">
                 <label for="message">Mensagem:</label>
-                <input type="text" id="message" placeholder="Digite sua mensagem">
-                <button type="button" onclick="sendMessage()">Enviar</button>
+                <input type="text" name="message" placeholder="Digite sua mensagem">
+                <button type="submit">Enviar</button>
             </form>
             <hr>
+
             <h2>Apagar Mensagem</h2>
             <form id="deleteMessageForm">
                 <label for="message-id-to-delete">ID da mensagem para apagar:</label>
@@ -111,6 +113,7 @@
                 <button type="button" onclick="deleteMessage()">Apagar Mensagem</button>
             </form>
             <hr>
+
             <h2>Visualizar Todas as Mensagens</h2>
             <form id="viewAllMessagesForm">
                 <label for="user-id-to-view-messages">ID do usuário para visualizar mensagens:</label>
@@ -118,12 +121,14 @@
                 <button type="button" onclick="viewAllMessages()">Visualizar Mensagens</button>
             </form>
             <hr>
+
             <h2>Visualizar Mensagens Não Lidas</h2>
             <form id="viewUnreadMessagesForm">
                 <label for="user-id-to-view-unread-messages">ID do usuário para visualizar mensagens não lidas:</label>
                 <input type="text" id="user-id-to-view-unread-messages" placeholder="Insira o ID do usuário">
                 <button type="button" onclick="viewUnreadMessages()">Visualizar Mensagens Não Lidas</button>
             </form>
+            
             <div id="unread-message-display" class="popup">
                 <span class="close-btn" onclick="closePopup('unread-message-display')">X</span>
                 <h2>Mensagens Não Lidas</h2>
