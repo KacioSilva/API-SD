@@ -65,13 +65,14 @@
             border: 1px solid #ccc;
             padding: 10px;
             margin-top: 20px;
+            display: none; /* Inicialmente oculto */
         }
     </style>
 </head>
 <body>
     <div id="chat-container">
         <div id="input-container">
-            <h2>Enviar Mensagem</h2>
+            <h2>CHAT DISTRIBUÍDO</h2>
             <form id="sendMessageForm">
                 <label for="recipient-id">ID do destinatário:</label>
                 <input type="text" id="recipient-id" placeholder="Insira o ID do destinatário">
@@ -97,6 +98,27 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        function sendMessage() {
+            // Adicione lógica para enviar mensagens aqui, se necessário
+            console.log('Enviando mensagem...');
+        }
+
+        function deleteMessage() {
+            // Adicione lógica para apagar mensagens aqui, se necessário
+            console.log('Apagando mensagem...');
+        }
+
+        function viewAllMessages() {
+            var messageDisplay = document.getElementById('message-display');
+
+            if (messageDisplay.style.display === 'none') {
+                messageDisplay.style.display = 'block';
+                // Adicione lógica para carregar e exibir mensagens aqui, se necessário
+            } else {
+                messageDisplay.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
