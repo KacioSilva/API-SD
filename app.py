@@ -54,7 +54,7 @@ def get_messages(user_id):
         message.read = True
         db.session.commit() # Marca as mensagens como lidas
 
-    return jsonify([{'ID da Mensagem': msg.id + ' / mensagem: ' + msg.content} for msg in messages])
+    return jsonify([{'ID da Mensagem': msg.id, 'mensagem': f'{msg.id} / {msg.content}' } for msg in messages])
 
 if __name__ == '__main__':
     app.run(debug=True)
