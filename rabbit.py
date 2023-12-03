@@ -12,7 +12,7 @@ class RabbitMQ:
             with self.lock:
                 self.messages.append(body.decode())
 
-        connection = pika.BlockingConnection(pika.ConnectionParameters(port=5000))  
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq', port=5000))  
         channel = connection.channel()
         channel.queue_declare(queue=self.queue_name)
         channel.basic_consume(queue=self.queue_name, on_message_callback=callback, auto_ack=True)
