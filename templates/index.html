@@ -5,9 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
     <style>
-        /* Estilos anteriores aqui... */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
 
-        .popup {
+        #chat-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #input-container {
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        form {
+            display: inline-block;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+
+        #message-display {
             display: none;
             position: fixed;
             top: 50%;
@@ -42,7 +94,21 @@
 <body>
     <div id="chat-container">
         <div id="input-container">
-            <!-- ... (seções anteriores do HTML) -->
+            <h2>Enviar Mensagem</h2>
+            <form id="sendMessageForm">
+                <label for="recipient-id">ID do destinatário:</label>
+                <input type="text" id="recipient-id" placeholder="Insira o ID do destinatário">
+                <label for="message">Mensagem:</label>
+                <input type="text" id="message" placeholder="Digite sua mensagem">
+                <button type="button" onclick="sendMessage()">Enviar</button>
+            </form>
+            <hr>
+            <h2>Apagar Mensagem</h2>
+            <form id="deleteMessageForm">
+                <label for="message-id-to-delete">ID da mensagem para apagar:</label>
+                <input type="text" id="message-id-to-delete" placeholder="Insira o ID da mensagem">
+                <button type="button" onclick="deleteMessage()">Apagar Mensagem</button>
+            </form>
             <hr>
             <h2>Visualizar Todas as Mensagens</h2>
             <form id="viewAllMessagesForm">
@@ -60,32 +126,16 @@
     </div>
 
     <script>
-        // Funções anteriores aqui...
+        function sendMessage() {
+            // Adicione lógica para enviar mensagens aqui, se necessário
+            console.log('Enviando mensagem...');
+        }
+
+        function deleteMessage() {
+            // Adicione lógica para apagar mensagens aqui, se necessário
+            console.log('Apagando mensagem...');
+        }
 
         function viewAllMessages() {
-            var messageDisplay = document.getElementById('message-display');
-            var overlay = document.querySelector('.overlay');
-
-            // Adicione lógica para carregar e exibir mensagens aqui, se necessário
-            var messagesContent = document.getElementById('messages-content');
-            messagesContent.innerHTML = '<p>Mensagem 1</p><p>Mensagem 2</p>'; // Exemplo, substitua pela lógica real
-
-            if (messageDisplay.style.display === 'none') {
-                messageDisplay.style.display = 'block';
-                overlay.style.display = 'block';
-            } else {
-                messageDisplay.style.display = 'none';
-                overlay.style.display = 'none';
-            }
+            var messageDisplay
         }
-
-        function closePopup() {
-            var messageDisplay = document.getElementById('message-display');
-            var overlay = document.querySelector('.overlay');
-
-            messageDisplay.style.display = 'none';
-            overlay.style.display = 'none';
-        }
-    </script>
-</body>
-</html>
