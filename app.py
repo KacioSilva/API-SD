@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from aplicativo.rabbit import RabbitMQ
+from rabbit import RabbitMQ
 
 app = Flask(__name__)
 rabbit = RabbitMQ('chat_queue')
