@@ -1,8 +1,18 @@
 # backend/app.py
 from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-user_messages = {}  # Dicionário para armazenar mensagens por usuário
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://chat_dados_user:fuWlIngju6yUpkZdrSC1r5yIKDRYstOi@dpg-clm00tsjtl8s73eqv2g0-a/chat_dados'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(50), nullable=False)
+    content = db.Column(db.String(200), nullable=False)
+    read = db.Column(db.Boolean, default=False)
 
 @app.route('/send_message', methods=['POST'])
 def send_message():
@@ -13,30 +23,27 @@ def send_message():
     if user_id is None or message_content is None:
         return {'status': 'error', 'message': 'User ID and message are required.'}
 
-    if user_id not in user_messages:
-        user_messages[user_id] = []
+    new_message = Message(user_id=user_id, content=message_content, read=False)
 
-    new_message = {'content': message_content, 'read': False}
-    user_messages[user_id].append(new_message)
-
-    return {'status': 'success'}
+    try:
+        db.session.add(new_message)
+        db.session.commit()
+        return {'status': 'success'}
+    except Exception as e:
+        print(str(e))
+        db.session.rollback()
+        return {'status': 'error'}
 
 @app.route('/get_messages/<user_id>', methods=['GET'])
 def get_messages(user_id):
-    if user_id not in user_messages:
-        return {'status': 'error', 'message': 'User not found.'}
+    messages = Message.query.filter_by(user_id=user_id, read=False).all()
 
-    # Recupera as mensagens do usuário
-    messages = user_messages[user_id]
-
-    # Marca as mensagens como lidas
     for message in messages:
-        message['read'] = True
+        message.read = True  # Marca as mensagens como lidas
 
-    # Esvazia a lista de mensagens para o usuário
-    user_messages[user_id] = []
+    db.session.commit()
 
-    return jsonify(messages)
+    return jsonify([{'content': msg.content} for msg in messages])
 
 if __name__ == '__main__':
     app.run(debug=True)
