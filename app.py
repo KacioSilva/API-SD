@@ -1,5 +1,5 @@
 # backend/app.py
-from flask import Flask, request, jsonify
+from flask import Flask, abort, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -56,5 +56,19 @@ def get_messages(user_id):
 
     return jsonify([{'ID da Mensagem': msg.id, 'mensagem': f'{msg.content}' } for msg in messages])
 
+@app.route('/delete_message/<message_id>', methods=['GET'])
+def delete_message(message_id):
+    # Busca a mensagem pelo ID
+    message = Message.query.get(message_id)
+
+    if message:
+        # Se a mensagem existe
+        db.session.delete(message)
+        db.session.commit()
+        return {'status': 'success', 'message': 'Message deleted successfully'}
+    else:
+        # Se a mensagem não existe
+        return abort(404, 'A mensagem procurada não é existente')
+    
 if __name__ == '__main__':
     app.run(debug=True)
