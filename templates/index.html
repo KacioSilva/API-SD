@@ -129,7 +129,7 @@
 
             <h2>Enviar Mensagem</h2>
             <form id="sendMessageForm" action="/send_message" method="POST" onsubmit="return sendMessage()">
-                <label for="recipient-id">ID do destinatário:</label>
+                <label for="recipient-id">Nome do destinatário:</label>
                 <input type="text" name="user_id" placeholder="Insira o ID do destinatário" required="required">
                 <label for="message">Mensagem:</label>
                 <input type="text" name="message" placeholder="Digite sua mensagem" required="required">
@@ -146,7 +146,7 @@
 
             <h2>Visualizar Todas as Mensagens</h2>
             <form id="viewAllMessagesForm">
-                <label for="user-id-to-view-messages">ID do usuário para visualizar mensagens:</label>
+                <label for="user-id-to-view-messages">Nome do usuário para visualizar mensagens:</label>
                 <input type="text" id="user-id-to-view-messages" placeholder="Insira o ID do usuário" required="required">
                 <button type="button" onclick="viewAllMessages()">Visualizar Mensagens</button>
             </form>
@@ -154,10 +154,10 @@
 
             <h2>Visualizar Mensagens Não Lidas</h2>
             <form id="viewUnreadMessagesForm">
-                <label for="user-id-to-view-unread-messages">ID do usuário para visualizar mensagens não lidas:</label>
+                <label for="user-id-to-view-unread-messages">Nome do usuário para visualizar mensagens não lidas:</label>
                 <input type="text" id="user-id-to-view-unread-messages" placeholder="Insira o ID do usuário" required="required">
                 <button type="button" onclick="viewUnreadMessages()">Visualizar Mensagens Não Lidas</button>
-            </form>
+            </form> 
 
             <!-- Modal existente -->
             <div id="unread-message-display" class="popup">
