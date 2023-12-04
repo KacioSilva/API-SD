@@ -90,6 +90,33 @@
             top: 10px;
             right: 10px;
         }
+
+        /* Estilos para o modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .close {
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -99,9 +126,9 @@
             <h2>Enviar Mensagem</h2>
             <form id="sendMessageForm" action="/send_message" method="POST" onsubmit="return sendMessage()">
                 <label for="recipient-id">ID do destinatário:</label>
-                <input type="text" name="user_id" placeholder="Insira o ID do destinatário", required="required">
+                <input type="text" name="user_id" placeholder="Insira o ID do destinatário" required="required">
                 <label for="message">Mensagem:</label>
-                <input type="text" name="message" placeholder="Digite sua mensagem", required="required">
+                <input type="text" name="message" placeholder="Digite sua mensagem" required="required">
                 <button type="submit">Enviar</button>
             </form>
 
@@ -124,21 +151,28 @@
             <h2>Visualizar Mensagens Não Lidas</h2>
             <form id="viewUnreadMessagesForm">
                 <label for="user-id-to-view-unread-messages">ID do usuário para visualizar mensagens não lidas:</label>
-                <input type="text" id="user-id-to-view-unread-messages" placeholder="Insira o ID do usuário", required="required">
+                <input type="text" id="user-id-to-view-unread-messages" placeholder="Insira o ID do usuário" required="required">
                 <button type="button" onclick="viewUnreadMessages()">Visualizar Mensagens Não Lidas</button>
             </form>
 
+            <!-- Modal existente -->
             <div id="unread-message-display" class="popup">
                 <span class="close-btn" onclick="closePopup('unread-message-display')">X</span>
                 <h2>Mensagens Não Lidas</h2>
                 <div id="unread-messages-content"></div>
             </div>
             <div class="overlay" onclick="closePopup('unread-message-display')"></div>
+
+            <!-- Novo Modal -->
+            <div id="messageModal" class="modal">
+                <span class="close" onclick="closeModal('messageModal')">&times;</span>
+                <div id="allMessagesContainer"></div>
+            </div>
         </div>
     </div>
 
     <script>
-         function sendMessage() {
+        function sendMessage() {
             const user_id = document.getElementsByName('user_id')[0].value;
             const message = document.getElementsByName('message')[0].value;
 
@@ -154,11 +188,10 @@
             })
             .then(response => response.json())
             .then(data => {
-                alert('mensagem enviada com sucesso!')
-               
+                alert('mensagem enviada com sucesso!');
             })
             .catch(error => {
-                alert('A mensagem não foi enviada')
+                alert('A mensagem não foi enviada');
             });
             
             return false; // Evita o envio padrão do formulário
@@ -187,19 +220,18 @@
             })
             .then(response => response.json())
             .then(messages => {
-                console.log(messages);
-
-                // Exibir as mensagens na div
                 const allMessagesContainer = document.getElementById('allMessagesContainer');
                 allMessagesContainer.innerHTML = '';
 
                 messages.forEach(msg => {
                     allMessagesContainer.innerHTML += `<p>ID da Mensagem: ${msg['ID da Mensagem']}, Mensagem: ${msg['Mensagem']}</p>`;
                 });
+
+                // Abre o modal
+                openModal('messageModal');
             })
             .catch(error => {
                 console.error('Erro:', error);
-                // Exibir alerta de erro
                 alert('Erro ao obter todas as mensagens. Por favor, tente novamente.');
             });
         }
@@ -220,12 +252,22 @@
             }
         }
 
+        function closeModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.style.display = 'none';
+        }
+
         function closePopup(popupId) {
             var popup = document.getElementById(popupId);
             var overlay = document.querySelector('.overlay');
 
             popup.style.display = 'none';
             overlay.style.display = 'none';
+        }
+
+        function openModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.style.display = 'block';
         }
     </script>
 </body>
