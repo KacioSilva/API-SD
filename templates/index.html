@@ -237,20 +237,29 @@
         }
 
         function viewUnreadMessages() {
-            var unreadMessageDisplay = document.getElementById('unread-message-display');
-            var overlay = document.querySelector('.overlay');
+            const userIdToViewUnreadMessages = document.getElementById('user-id-to-view-unread-messages').value;
 
-            var unreadMessagesContent = document.getElementById('unread-messages-content');
-            unreadMessagesContent.innerHTML = '<p>Mensagem não lida 1</p><p>Mensagem não lida 2</p>'; // Substitua pela lógica real
+            fetch(`/get_messages_unread/${userIdToViewUnreadMessages}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(messages => {
+                const allMessagesContainer = document.getElementById('allMessagesContainer');
+                allMessagesContainer.innerHTML = '';
 
-            if (unreadMessageDisplay.style.display === 'none') {
-                unreadMessageDisplay.style.display = 'block';
-                overlay.style.display = 'block';
-            } else {
-                unreadMessageDisplay.style.display = 'none';
-                overlay.style.display = 'none';
-            }
+                messages.forEach(msg => {
+                    allMessagesContainer.innerHTML += `<p>ID da Mensagem: ${msg['ID da Mensagem']}, Mensagem: ${msg['Mensagem']}</p>`;
+                });
+
+                // Abre o modal
+                openModal('messageModal');
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao obter mensagens não lidas. Por favor, tente novamente.');
+            });
         }
+
 
         function closeModal(modalId) {
             var modal = document.getElementById(modalId);
