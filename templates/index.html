@@ -116,15 +116,15 @@
             <h2>Visualizar Todas as Mensagens</h2>
             <form id="viewAllMessagesForm">
                 <label for="user-id-to-view-messages">ID do usuário para visualizar mensagens:</label>
-                <input type="text" id="user-id-to-view-messages" placeholder="Insira o ID do usuário", required="required">
-                <button type="button" onclick="viewAllMessages()">Visualizar Mensagens</button>
+                <input type="text" id="user-id-to-view-messages" placeholder="Insira o ID do usuário" required>
+                <button type="button" onclick="viewAllMessages()">Visualizar Mensagens</button>        
             </form>
             <hr>
 
             <h2>Visualizar Mensagens Não Lidas</h2>
             <form id="viewUnreadMessagesForm">
                 <label for="user-id-to-view-unread-messages">ID do usuário para visualizar mensagens não lidas:</label>
-                <input type="text" id="user-id-to-view-unread-messages" placeholder="Insira o ID do usuário", required="required">
+                <input type="text" id="user-id-to-view-unread-messages" placeholder="Insira o ID do usuário" required>
                 <button type="button" onclick="viewUnreadMessages()">Visualizar Mensagens Não Lidas</button>
             </form>
 
@@ -180,35 +180,53 @@
         }
 
         function viewAllMessages() {
-            var messageDisplay = document.getElementById('message-display');
-            var overlay = document.querySelector('.overlay');
+            const userIdToViewMessages = document.getElementById('user-id-to-view-messages').value;
 
-            var messagesContent = document.getElementById('messages-content');
-            messagesContent.innerHTML = '<p>Mensagem 1</p><p>Mensagem 2</p>'; // Substitua pela lógica real
+            fetch(`/get_all_messages/${userIdToViewMessages}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(messages => {
+                console.log(messages);
 
-            if (messageDisplay.style.display === 'none') {
-                messageDisplay.style.display = 'block';
-                overlay.style.display = 'block';
-            } else {
-                messageDisplay.style.display = 'none';
-                overlay.style.display = 'none';
-            }
+                // Exibir as mensagens na div
+                const messagesContainer = document.getElementById('messagesContainer');
+                messagesContainer.innerHTML = '';
+
+                messages.forEach(msg => {
+                    messagesContainer.innerHTML += `<p>ID da Mensagem: ${msg['ID da Mensagem']}, Mensagem: ${msg['Mensagem']}</p>`;
+                });
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                // Exibir alerta de erro
+                alert('Erro ao obter mensagens. Por favor, tente novamente.');
+            });
         }
 
         function viewUnreadMessages() {
-            var unreadMessageDisplay = document.getElementById('unread-message-display');
-            var overlay = document.querySelector('.overlay');
+            const userIdToViewUnreadMessages = document.getElementById('user-id-to-view-unread-messages').value;
 
-            var unreadMessagesContent = document.getElementById('unread-messages-content');
-            unreadMessagesContent.innerHTML = '<p>Mensagem não lida 1</p><p>Mensagem não lida 2</p>'; // Substitua pela lógica real
+            fetch(`/get_messages_unread/${userIdToViewUnreadMessages}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(messages => {
+                console.log(messages);
 
-            if (unreadMessageDisplay.style.display === 'none') {
-                unreadMessageDisplay.style.display = 'block';
-                overlay.style.display = 'block';
-            } else {
-                unreadMessageDisplay.style.display = 'none';
-                overlay.style.display = 'none';
-            }
+                // Exibir as mensagens não lidas na div
+                const unreadMessagesContainer = document.getElementById('unreadMessagesContainer');
+                unreadMessagesContainer.innerHTML = '';
+
+                messages.forEach(msg => {
+                    unreadMessagesContainer.innerHTML += `<p>ID da Mensagem: ${msg['ID da Mensagem']}, Mensagem: ${msg['Mensagem']}</p>`;
+                });
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                // Exibir alerta de erro
+                alert('Erro ao obter mensagens não lidas. Por favor, tente novamente.');
+            });
         }
 
         function closePopup(popupId) {
