@@ -109,14 +109,14 @@
             <h2>Apagar Mensagem</h2>
             <form id="deleteMessageForm">
                 <label for="message-id-to-delete">ID da mensagem para apagar:</label>
-                <input type="text" id="message-id-to-delete" placeholder="Insira o ID da mensagem" required>
+                <input type="text" id="message-id-to-delete" placeholder="Insira o ID da mensagem" required="required">
                 <button type="button" onclick="deleteMessage()">Apagar Mensagem</button>
             </form>
 
             <h2>Visualizar Todas as Mensagens</h2>
             <form id="viewAllMessagesForm">
                 <label for="user-id-to-view-messages">ID do usuário para visualizar mensagens:</label>
-                <input type="text" id="user-id-to-view-messages" placeholder="Insira o ID do usuário", required="required">
+                <input type="text" id="user-id-to-view-messages" placeholder="Insira o ID do usuário" required="required">
                 <button type="button" onclick="viewAllMessages()">Visualizar Mensagens</button>
             </form>
             <hr>
@@ -180,19 +180,28 @@
         }
 
         function viewAllMessages() {
-            var messageDisplay = document.getElementById('message-display');
-            var overlay = document.querySelector('.overlay');
+            const userIdToViewMessages = document.getElementById('user-id-to-view-messages').value;
 
-            var messagesContent = document.getElementById('messages-content');
-            messagesContent.innerHTML = '<p>Mensagem 1</p><p>Mensagem 2</p>'; // Substitua pela lógica real
+            fetch(`/get_all_messages/${userIdToViewMessages}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(messages => {
+                console.log(messages);
 
-            if (messageDisplay.style.display === 'none') {
-                messageDisplay.style.display = 'block';
-                overlay.style.display = 'block';
-            } else {
-                messageDisplay.style.display = 'none';
-                overlay.style.display = 'none';
-            }
+                // Exibir as mensagens na div
+                const allMessagesContainer = document.getElementById('allMessagesContainer');
+                allMessagesContainer.innerHTML = '';
+
+                messages.forEach(msg => {
+                    allMessagesContainer.innerHTML += `<p>ID da Mensagem: ${msg['ID da Mensagem']}, Mensagem: ${msg['Mensagem']}</p>`;
+                });
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                // Exibir alerta de erro
+                alert('Erro ao obter todas as mensagens. Por favor, tente novamente.');
+            });
         }
 
         function viewUnreadMessages() {
