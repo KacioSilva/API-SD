@@ -5,7 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Chat Distribuído</title>
-    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        #chat-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #input-container {
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        form {
+            display: inline-block;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            margin-top: 10px;
+            display: flex;
+            margin: auto;
+            
+        }
+
+        #message-display,
+        #unread-message-display {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Estilos para o modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .close {
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
 </head>
 <body>
     <div id="chat-container">
@@ -19,6 +135,8 @@
                 <input type="text" name="message" placeholder="Digite sua mensagem" required="required">
                 <button type="submit">Enviar</button>
             </form>
+
+
             <h2>Apagar Mensagem</h2>
             <form id="deleteMessageForm">
                 <label for="message-id-to-delete">ID da mensagem para apagar:</label>
@@ -56,6 +174,114 @@
             </div>
         </div>
     </div>
-<script src="script.js"></script>
+
+    <script>
+        function sendMessage() {
+            const user_id = document.getElementsByName('user_id')[0].value;
+            const message = document.getElementsByName('message')[0].value;
+
+            fetch('/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: user_id,
+                    message: message,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('mensagem enviada com sucesso!');
+            })
+            .catch(error => {
+                alert('A mensagem não foi enviada');
+            });
+            
+            return false; // Evita o envio padrão do formulário
+        }
+
+        function deleteMessage() {
+            const messageIdToDelete = document.getElementById('message-id-to-delete').value;
+
+            fetch(`/delete_message/${messageIdToDelete}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Mensagem apagada com sucesso!');
+            })
+            .catch(error => {
+                alert('Erro ao apagar a mensagem. Por favor, tente novamente.');
+            });
+        }
+
+        function viewAllMessages() {
+            const userIdToViewMessages = document.getElementById('user-id-to-view-messages').value;
+
+            fetch(`/get_all_messages/${userIdToViewMessages}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(messages => {
+                const allMessagesContainer = document.getElementById('allMessagesContainer');
+                allMessagesContainer.innerHTML = '';
+
+                messages.forEach(msg => {
+                    allMessagesContainer.innerHTML += `<p>ID da Mensagem: ${msg['ID da Mensagem']}, Mensagem: ${msg['Mensagem']}</p>`;
+                });
+
+                // Abre o modal
+                openModal('messageModal');
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao obter todas as mensagens. Por favor, tente novamente.');
+            });
+        }
+
+        function viewUnreadMessages() {
+            const userIdToViewUnreadMessages = document.getElementById('user-id-to-view-unread-messages').value;
+
+            fetch(`/get_messages_unread/${userIdToViewUnreadMessages}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(messages => {
+                const allMessagesContainer = document.getElementById('allMessagesContainer');
+                allMessagesContainer.innerHTML = '';
+
+                messages.forEach(msg => {
+                    allMessagesContainer.innerHTML += `<p>ID da Mensagem: ${msg['ID da Mensagem']}, Mensagem: ${msg['Mensagem']}</p>`;
+                });
+
+                // Abre o modal
+                openModal('messageModal');
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao obter mensagens não lidas. Por favor, tente novamente.');
+            });
+        }
+
+
+        function closeModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.style.display = 'none';
+        }
+
+        function closePopup(popupId) {
+            var popup = document.getElementById(popupId);
+            var overlay = document.querySelector('.overlay');
+
+            popup.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+        function openModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.style.display = 'block';
+        }
+    </script>
 </body>
 </html>
