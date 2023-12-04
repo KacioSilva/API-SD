@@ -99,9 +99,9 @@
             <h2>Enviar Mensagem</h2>
             <form id="sendMessageForm" action="/send_message" method="POST" onsubmit="return sendMessage()">
                 <label for="recipient-id">ID do destinatário:</label>
-                <input type="text" name="user_id" placeholder="Insira o ID do destinatário">
+                <input type="text" name="user_id" placeholder="Insira o ID do destinatário", required="required">
                 <label for="message">Mensagem:</label>
-                <input type="text" name="message" placeholder="Digite sua mensagem">
+                <input type="text" name="message" placeholder="Digite sua mensagem", required="required">
                 <button type="submit">Enviar</button>
             </form>
 
@@ -109,15 +109,14 @@
             <h2>Apagar Mensagem</h2>
             <form id="deleteMessageForm">
                 <label for="message-id-to-delete">ID da mensagem para apagar:</label>
-                <input type="text" id="message-id-to-delete" placeholder="Insira o ID da mensagem">
+                <input type="text" id="message-id-to-delete" placeholder="Insira o ID da mensagem" required>
                 <button type="button" onclick="deleteMessage()">Apagar Mensagem</button>
             </form>
-            <hr>
 
             <h2>Visualizar Todas as Mensagens</h2>
             <form id="viewAllMessagesForm">
                 <label for="user-id-to-view-messages">ID do usuário para visualizar mensagens:</label>
-                <input type="text" id="user-id-to-view-messages" placeholder="Insira o ID do usuário">
+                <input type="text" id="user-id-to-view-messages" placeholder="Insira o ID do usuário", required="required">
                 <button type="button" onclick="viewAllMessages()">Visualizar Mensagens</button>
             </form>
             <hr>
@@ -125,7 +124,7 @@
             <h2>Visualizar Mensagens Não Lidas</h2>
             <form id="viewUnreadMessagesForm">
                 <label for="user-id-to-view-unread-messages">ID do usuário para visualizar mensagens não lidas:</label>
-                <input type="text" id="user-id-to-view-unread-messages" placeholder="Insira o ID do usuário">
+                <input type="text" id="user-id-to-view-unread-messages" placeholder="Insira o ID do usuário", required="required">
                 <button type="button" onclick="viewUnreadMessages()">Visualizar Mensagens Não Lidas</button>
             </form>
 
@@ -155,19 +154,29 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                // Trate a resposta conforme necessário
+                alert('mensagem enviada com sucesso!')
+               
             })
             .catch(error => {
-                console.error('Erro:', error);
-                // Trate o erro conforme necessário
+                alert('A mensagem não foi enviada')
             });
-
+            
             return false; // Evita o envio padrão do formulário
         }
 
         function deleteMessage() {
-            console.log('Apagando mensagem...');
+            const messageIdToDelete = document.getElementById('message-id-to-delete').value;
+
+            fetch(`/delete_message/${messageIdToDelete}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Mensagem apagada com sucesso!');
+            })
+            .catch(error => {
+                alert('Erro ao apagar a mensagem. Por favor, tente novamente.');
+            });
         }
 
         function viewAllMessages() {
