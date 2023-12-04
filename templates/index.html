@@ -97,14 +97,14 @@
         <div id="input-container">
 
             <h2>Enviar Mensagem</h2>
-            <form id="sendMessageForm" action="/send_message" method="POST">
+            <form id="sendMessageForm" action="/send_message" method="POST" onsubmit="return sendMessage()">
                 <label for="recipient-id">ID do destinatário:</label>
                 <input type="text" name="user_id" placeholder="Insira o ID do destinatário">
                 <label for="message">Mensagem:</label>
                 <input type="text" name="message" placeholder="Digite sua mensagem">
                 <button type="submit">Enviar</button>
             </form>
-            <hr>
+
 
             <h2>Apagar Mensagem</h2>
             <form id="deleteMessageForm">
@@ -128,7 +128,7 @@
                 <input type="text" id="user-id-to-view-unread-messages" placeholder="Insira o ID do usuário">
                 <button type="button" onclick="viewUnreadMessages()">Visualizar Mensagens Não Lidas</button>
             </form>
-            
+
             <div id="unread-message-display" class="popup">
                 <span class="close-btn" onclick="closePopup('unread-message-display')">X</span>
                 <h2>Mensagens Não Lidas</h2>
@@ -139,8 +139,31 @@
     </div>
 
     <script>
-        function sendMessage() {
-            console.log('Enviando mensagem...');
+         function sendMessage() {
+            const user_id = document.getElementsByName('user_id')[0].value;
+            const message = document.getElementsByName('message')[0].value;
+
+            fetch('/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: user_id,
+                    message: message,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // Trate a resposta conforme necessário
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                // Trate o erro conforme necessário
+            });
+
+            return false; // Evita o envio padrão do formulário
         }
 
         function deleteMessage() {
